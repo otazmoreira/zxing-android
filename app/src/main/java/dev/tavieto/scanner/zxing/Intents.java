@@ -120,7 +120,7 @@ public final class Intents {
 
     /**
      * If a barcode is found, Barcodes returns {@link android.app.Activity#RESULT_OK} to
-     * {@link android.app.Activity#onActivityResult(int, int, Intent)}
+     * {@linkk android.app.Activity#onActivityResult(int, int, Intent)}
      * of the app which requested the scan via
      * {@link android.app.Activity#startActivityForResult(Intent, int)}
      * The barcodes contents can be retrieved with

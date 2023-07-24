@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import dev.tavieto.scanner.zxing.HttpHelper;
 import dev.tavieto.scanner.zxing.LocaleManager;
-import dev.tavieto.scanner.zxing.history.HistoryManager;
 
 import com.google.zxing.client.android.R;
 
@@ -44,8 +43,8 @@ final class BookResultInfoRetriever extends SupplementalInfoRetriever {
   private final String source;
   private final Context context;
   
-  BookResultInfoRetriever(TextView textView, String isbn, HistoryManager historyManager, Context context) {
-    super(textView, historyManager);
+  BookResultInfoRetriever(TextView textView, String isbn, Context context) {
+    super(textView);
     this.isbn = isbn;
     this.source = context.getString(R.string.msg_google_books);
     this.context = context;

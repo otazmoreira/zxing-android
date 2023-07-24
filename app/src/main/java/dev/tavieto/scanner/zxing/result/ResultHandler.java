@@ -21,20 +21,13 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 
 import com.google.zxing.Result;
-import dev.tavieto.scanner.zxing.Contents;
-import dev.tavieto.scanner.zxing.Intents;
-import dev.tavieto.scanner.zxing.LocaleManager;
-import dev.tavieto.scanner.zxing.PreferencesActivity;
 import com.google.zxing.client.android.R;
-import dev.tavieto.scanner.zxing.book.SearchBookContentsActivity;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ParsedResultType;
 import com.google.zxing.client.result.ResultParser;
@@ -43,6 +36,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import dev.tavieto.scanner.zxing.Contents;
+import dev.tavieto.scanner.zxing.Intents;
+import dev.tavieto.scanner.zxing.LocaleManager;
 
 /**
  * A base class for the Android-specific barcode handlers. These allow the app to polymorphically
@@ -427,7 +424,7 @@ public abstract class ResultHandler {
 
   final void searchBookContents(String isbnOrUrl) {
     Intent intent = new Intent(Intents.SearchBookContents.ACTION);
-    intent.setClassName(activity, SearchBookContentsActivity.class.getName());
+
     putExtra(intent, Intents.SearchBookContents.ISBN, isbnOrUrl);
     launchIntent(intent);
   }
@@ -489,9 +486,6 @@ public abstract class ResultHandler {
   }
 
   private String parseCustomSearchURL() {
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-    String customProductSearch = prefs.getString(PreferencesActivity.KEY_CUSTOM_PRODUCT_SEARCH,
-        null);
     if (customProductSearch != null && customProductSearch.trim().isEmpty()) {
       return null;
     }

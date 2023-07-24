@@ -26,7 +26,6 @@ import android.text.style.URLSpan;
 import android.util.Log;
 import android.widget.TextView;
 
-import dev.tavieto.scanner.zxing.history.HistoryManager;
 import com.google.zxing.client.result.ISBNParsedResult;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ProductParsedResult;
@@ -49,35 +48,33 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object,Object,
   static final String[] EMPTY_STR_ARRAY = new String[0];
 
   private final WeakReference<TextView> textViewRef;
-  private final WeakReference<HistoryManager> historyManagerRef;
   private final Collection<Spannable> newContents;
   private final Collection<String[]> newHistories;
 
   public static void maybeInvokeRetrieval(TextView textView,
                                           ParsedResult result,
-                                          HistoryManager historyManager,
                                           Context context) {
     try {
       if (result instanceof URIParsedResult) {
         SupplementalInfoRetriever uriRetriever =
-            new URIResultInfoRetriever(textView, (URIParsedResult) result, historyManager, context);
+            new URIResultInfoRetriever(textView, (URIParsedResult) result, context);
         uriRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         SupplementalInfoRetriever titleRetriever =
-            new TitleRetriever(textView, (URIParsedResult) result, historyManager);
+            new TitleRetriever(textView, (URIParsedResult) result);
         titleRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
       } else if (result instanceof ProductParsedResult) {
         ProductParsedResult productParsedResult = (ProductParsedResult) result;
         String productID = productParsedResult.getProductID();
         SupplementalInfoRetriever productRetriever =
-            new ProductResultInfoRetriever(textView, productID, historyManager, context);
+            new ProductResultInfoRetriever(textView, productID, context);
         productRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
       } else if (result instanceof ISBNParsedResult) {
         String isbn = ((ISBNParsedResult) result).getISBN();
         SupplementalInfoRetriever productInfoRetriever =
-            new ProductResultInfoRetriever(textView, isbn, historyManager, context);
+            new ProductResultInfoRetriever(textView, isbn, context);
         productInfoRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         SupplementalInfoRetriever bookInfoRetriever =
-            new BookResultInfoRetriever(textView, isbn, historyManager, context);
+            new BookResultInfoRetriever(textView, isbn, context);
         bookInfoRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
       }
     } catch (RejectedExecutionException ree) {
@@ -85,9 +82,8 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object,Object,
     }
   }
 
-  SupplementalInfoRetriever(TextView textView, HistoryManager historyManager) {
+  SupplementalInfoRetriever(TextView textView) {
     textViewRef = new WeakReference<>(textView);
-    historyManagerRef = new WeakReference<>(historyManager);
     newContents = new ArrayList<>();
     newHistories = new ArrayList<>();
   }
@@ -110,12 +106,6 @@ public abstract class SupplementalInfoRetriever extends AsyncTask<Object,Object,
         textView.append(content);
       }
       textView.setMovementMethod(LinkMovementMethod.getInstance());
-    }
-    HistoryManager historyManager = historyManagerRef.get();
-    if (historyManager != null) {
-      for (String[] text : newHistories) {
-        historyManager.addHistoryItemDetails(text[0], text[1]);
-      }
     }
   }
 

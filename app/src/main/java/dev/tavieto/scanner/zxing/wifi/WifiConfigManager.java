@@ -16,6 +16,7 @@
 
 package dev.tavieto.scanner.zxing.wifi;
 
+import android.annotation.SuppressLint;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiEnterpriseConfig;
 import android.net.wifi.WifiManager;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
  * @author Sean Owen
  * @author Steffen Kieß
  */
-public final class WifiConfigManager extends AsyncTask<WifiParsedResult,Object,Object> {
+public final class WifiConfigManager extends AsyncTask<WifiParsedResult, Object, Object> {
 
   private static final String TAG = WifiConfigManager.class.getSimpleName();
 
@@ -197,7 +198,7 @@ public final class WifiConfigManager extends AsyncTask<WifiParsedResult,Object,O
   }
 
   private static Integer findNetworkInExistingConfig(WifiManager wifiManager, String ssid) {
-    Iterable<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
+    @SuppressLint("MissingPermission") Iterable<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
     if (existingConfigs != null) {
       for (WifiConfiguration existingConfig : existingConfigs) {
         String existingSSID = existingConfig.SSID;
